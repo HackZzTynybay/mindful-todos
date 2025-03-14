@@ -21,12 +21,22 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Database connection
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://admin:todayiwenttoRampally@8374@eeasyhr.uybpd.mongodb.net/mindful_todos';
+// Improved Database connection with proper error handling
+const connectDB = async () => {
+  try {
+    const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://admin:todayiwenttoRampally@8374@eeasyhr.uybpd.mongodb.net/mindful_todos';
+    
+    await mongoose.connect(MONGO_URI);
+    console.log('MongoDB connected successfully');
+  } catch (err) {
+    console.error('MongoDB connection error:', err.message);
+    // Don't exit the process in serverless environment
+    // Instead, let the request fail gracefully
+  }
+};
 
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+// Connect to database
+connectDB();
 
 // Routes
 app.use('/api/users', userRoutes);
@@ -37,7 +47,22 @@ app.get('/', (req, res) => {
   res.send('Mindful Todos API is running');
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Server error',
+    error: process.env.NODE_ENV === 'production' ? 'Something went wrong' : err.message
+  });
 });
+
+// Start server in non-serverless environments
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+// For serverless environments like Vercel
+module.exports = app;
