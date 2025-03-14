@@ -48,6 +48,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/users');
 const todoRoutes = require('./routes/todos');
+const password = encodeURIComponent("todayiwenttoRampally@8374");
 
 // Load environment variables
 dotenv.config();
@@ -67,7 +68,7 @@ app.use(express.json());
 // Improved Database connection with proper error handling
 const connectDB = async () => {
   try {
-    const MONGO_URI = 'mongodb+srv://admin:todayiwenttoRampally%8374@eeasyhr.uybpd.mongodb.net/mindful_todos';
+    const MONGO_URI = `mongodb+srv://admin:${password}@eeasyhr.uybpd.mongodb.net/mindful_todos`;
     
     await mongoose.connect(MONGO_URI);
     console.log('MongoDB connected successfully');
