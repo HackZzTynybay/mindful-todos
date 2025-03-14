@@ -75,7 +75,7 @@ const connectDB = async () => {
   } catch (err) {
     console.error('MongoDB connection error:', err.message);
     // Don't exit the process in serverless environment
-    // Instead, let the request fail gracefully
+    // Instead, let the request fail gracefull
   }
 };
 
