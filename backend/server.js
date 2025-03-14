@@ -67,7 +67,7 @@ app.use(express.json());
 // Improved Database connection with proper error handling
 const connectDB = async () => {
   try {
-    const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://admin:todayiwenttoRampally%8374@eeasyhr.uybpd.mongodb.net/mindful_todos';
+    const MONGO_URI = 'mongodb+srv://admin:todayiwenttoRampally%8374@eeasyhr.uybpd.mongodb.net/mindful_todos';
     
     await mongoose.connect(MONGO_URI);
     console.log('MongoDB connected successfully');
